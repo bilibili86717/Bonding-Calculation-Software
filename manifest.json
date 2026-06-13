@@ -1,0 +1,26 @@
+{
+    "name": "胶粘剂性能计算工具",
+    "short_name": "粘接计算",
+    "description": "高铁车窗胶粘剂性能评估系统",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#667eea",
+    "theme_color": "#165DFF",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "permissions": [],
+    "offline_enabled": true
+}

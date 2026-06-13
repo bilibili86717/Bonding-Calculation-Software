@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>胶粘剂性能计算工具</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/png">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="app-title">
+            <span class="logo">🛠️</span>
+            <div>
+                <h1>胶粘剂性能评估</h1>
+                <p class="subtitle">高铁车窗粘接计算工具</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="input">📝 参数输入</button>
+            <button class="tab-btn" data-tab="results">📊 计算结果</button>
+        </nav>
+
+        <!-- 参数输入页 -->
+        <section class="tab-panel" id="input">
+            <div class="card">
+                <h2 class="card-title">项目信息</h2>
+                <div class="grid-2">
+                    <div class="field">
+                        <label>项目名称</label>
+                        <input type="text" id="project_name" placeholder="如：CR400 车窗项目">
+                    </div>
+                    <div class="field">
+                        <label>产品图号</label>
+                        <input type="text" id="drawing_number" placeholder="如：TP-2024-001">
+                    </div>
+                    <div class="field">
+                        <label>胶粘剂型号</label>
+                        <input type="text" id="adhesive_model" placeholder="请输入型号">
+                    </div>
+                    <div class="field">
+                        <label>窗户位置</label>
+                        <select id="window_position">
+                            <option value="前窗">前窗</option>
+                            <option value="侧窗">侧窗</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">玻璃及安装参数</h2>
+                <div class="grid-3">
+                    <div class="field">
+                        <label>玻璃质量 <span class="unit">kg</span></label>
+                        <input type="number" id="glass_mass" value="48" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>玻璃面积 <span class="unit">m²</span></label>
+                        <input type="number" id="glass_area" value="1" step="0.01" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>玻璃长度 <span class="unit">mm</span></label>
+                        <input type="number" id="glass_length" value="1084" step="1" min="0" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>玻璃宽度 <span class="unit">mm</span></label>
+                        <input type="number" id="glass_width" value="967" step="1" min="0" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>安装角度 <span class="unit">°</span></label>
+                        <input type="number" id="installation_angle" value="66" step="1" min="0" max="90" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>粘接宽度 <span class="unit">mm</span></label>
+                        <input type="number" id="bond_width" value="25" step="1" min="0" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>胶层厚度 <span class="unit">mm</span></label>
+                        <input type="number" id="adhesive_thickness" value="8" step="1" min="0" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>列车最大速度 <span class="unit">km/h</span></label>
+                        <input type="number" id="train_speed" value="300" step="1" min="0" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">环境与载荷参数</h2>
+                <div class="grid-3">
+                    <div class="field">
+                        <label>风压 <span class="unit">Pa</span></label>
+                        <input type="number" id="wind_pressure" value="4500" step="100" min="0" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>纵向动载荷 <span class="unit">g</span></label>
+                        <input type="number" id="long_acceleration" value="3" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>横向动载荷 <span class="unit">g</span></label>
+                        <input type="number" id="trans_acceleration" value="1" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>垂直动载荷 <span class="unit">g</span></label>
+                        <input type="number" id="vert_acceleration" value="3" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>最低工作温度 <span class="unit">℃</span></label>
+                        <input type="number" id="min_temperature" value="-50" step="1" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label>最高工作温度 <span class="unit">℃</span></label>
+                        <input type="number" id="max_temperature" value="45" step="1" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">材料性能参数</h2>
+                <div class="grid-3">
+                    <div class="field">
+                        <label>玻璃热膨胀系数 <span class="unit">/℃</span></label>
+                        <input type="text" id="glass_expansion" value="9.28e-6">
+                    </div>
+                    <div class="field">
+                        <label>窗框热膨胀系数 <span class="unit">/℃</span></label>
+                        <input type="text" id="frame_expansion" value="23e-6">
+                    </div>
+                    <div class="field">
+                        <label>玻璃钢热膨胀系数 <span class="unit">/℃</span></label>
+                        <input type="text" id="frp_expansion" value="15e-6">
+                    </div>
+                    <div class="field">
+                        <label>初始抗拉强度 <span class="unit">MPa</span></label>
+                        <input type="number" id="tensile_strength" value="7.8" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>初始剪切强度 <span class="unit">MPa</span></label>
+                        <input type="number" id="shear_strength" value="5.3" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>允许最大剪切变形角</label>
+                        <input type="number" id="allow_shear_angle" value="0.5" step="0.01" min="0" inputmode="decimal">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">老化系数参数</h2>
+                <div class="grid-3">
+                    <div class="field">
+                        <label>温度差异系数</label>
+                        <input type="number" id="temp_factor" value="0.74" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>介质影响系数</label>
+                        <input type="number" id="medium_factor" value="0.91" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>几何差异系数</label>
+                        <input type="number" id="geo_factor" value="0.92" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>长期静态系数</label>
+                        <input type="number" id="long_static_factor" value="0.72" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>动态载荷系数</label>
+                        <input type="number" id="dynamic_factor" value="0.83" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>人工操作系数</label>
+                        <input type="number" id="human_factor" value="0.95" step="0.01" min="0" max="1" inputmode="decimal">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">安全系数要求</h2>
+                <div class="grid-2">
+                    <div class="field">
+                        <label>剪切安全系数</label>
+                        <input type="number" id="shear_safety_req" value="1.5" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                    <div class="field">
+                        <label>拉伸安全系数</label>
+                        <input type="number" id="tensile_safety_req" value="1.5" step="0.1" min="0" inputmode="decimal">
+                    </div>
+                </div>
+
+                <h3 class="sub-title">前窗工况</h3>
+                <div class="grid-3">
+                    <div class="field"><label>户外高速</label><input type="number" id="front_outdoor_req" value="1.5" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道入口</label><input type="number" id="front_tunnel_entry_req" value="1.5" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道内</label><input type="number" id="front_tunnel_stable_req" value="1.5" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道出口</label><input type="number" id="front_tunnel_exit_req" value="2.0" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>会车</label><input type="number" id="front_overtaking_req" value="2.0" step="0.1" min="0" inputmode="decimal"></div>
+                </div>
+
+                <h3 class="sub-title">侧窗工况</h3>
+                <div class="grid-3">
+                    <div class="field"><label>户外高速</label><input type="number" id="side_outdoor_req" value="2.0" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道入口</label><input type="number" id="side_tunnel_entry_req" value="2.5" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道内</label><input type="number" id="side_tunnel_stable_req" value="2.0" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>隧道出口</label><input type="number" id="side_tunnel_exit_req" value="3.0" step="0.1" min="0" inputmode="decimal"></div>
+                    <div class="field"><label>会车</label><input type="number" id="side_overtaking_req" value="3.0" step="0.1" min="0" inputmode="decimal"></div>
+                </div>
+            </div>
+
+            <!-- 输入页操作栏 -->
+            <div class="input-actions">
+                <button id="reset-btn" class="btn btn-ghost">🔄 重置参数</button>
+                <button id="calculate-btn" class="btn btn-primary">🖩 开始计算</button>
+            </div>
+        </section>
+
+        <!-- 计算结果页 -->
+        <section class="tab-panel" id="results" style="display: none;">
+            <div class="result-actions">
+                <button id="back-to-input-btn" class="btn btn-ghost">← 返回参数输入</button>
+                <button id="export-word-btn" class="btn btn-success">📄 导出Word报告</button>
+                <button id="export-pdf-btn" class="btn btn-warning">📑 导出PDF报告</button>
+            </div>
+
+            <div class="result-summary" id="result-summary">
+                <div class="status-pending">
+                    <div class="status-icon">⏳</div>
+                    <h3>等待计算</h3>
+                    <p>请输入参数并点击"开始计算"</p>
+                </div>
+            </div>
+
+            <div class="metric-grid">
+                <div class="metric-card" id="shear-card">
+                    <div class="metric-label">剪切安全系数</div>
+                    <div class="metric-value" id="shear-safety">-</div>
+                    <div class="metric-requirement" id="shear-requirement">要求: -</div>
+                </div>
+                <div class="metric-card" id="tensile-card">
+                    <div class="metric-label">拉伸安全系数</div>
+                    <div class="metric-value" id="tensile-safety">-</div>
+                    <div class="metric-requirement" id="tensile-requirement">要求: -</div>
+                </div>
+                <div class="metric-card" id="angle-card">
+                    <div class="metric-label">剪切变形角</div>
+                    <div class="metric-value" id="shear-angle">-</div>
+                    <div class="metric-requirement" id="angle-requirement">要求: -</div>
+                </div>
+            </div>
+
+            <div class="card details-card">
+                <h2 class="card-title">关键参数</h2>
+                <pre id="key-params"></pre>
+            </div>
+
+            <div class="card details-card">
+                <h2 class="card-title">详细计算过程</h2>
+                <div id="calculation-steps"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>胶粘剂性能评估系统 · 高铁车窗粘接计算工具</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="export_report.js"></script>
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            console.error('JavaScript错误:', msg, '在第', line, '行');
+            alert('错误: ' + msg + ' (行:' + line + ')');
+            return true;
+        };
+    </script>
+</body>
+</html>
