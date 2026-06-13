@@ -1,9 +1,10 @@
-const CACHE_NAME = 'adhesive-calculator-v1';
+const CACHE_NAME = 'adhesive-calculator-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './style.css',
     './app.js',
+    './export_report.js',
     './manifest.json',
     './icon.png'
 ];

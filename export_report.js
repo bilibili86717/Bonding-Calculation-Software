@@ -1,4 +1,4 @@
-﻿// ========== 报告导出功能 ==========
+// ========== 报告导出功能 ==========
 // 使用 docx.js 生成真正的 Word 文档 (.docx)
 // 使用 HTML + window.print() 生成 PDF
 
@@ -502,8 +502,6 @@ async function exportPdfReport() {
         @page {
             size: A4;
             margin: 2.54cm;
-        }
-        @page :left {
             @top-left-corner { content: ""; }
             @top-left { content: ""; }
             @top-center { content: ""; }
@@ -511,19 +509,7 @@ async function exportPdfReport() {
             @top-right-corner { content: ""; }
             @bottom-left-corner { content: ""; }
             @bottom-left { content: ""; }
-            @bottom-center { content: ""; }
-            @bottom-right { content: ""; }
-            @bottom-right-corner { content: ""; }
-        }
-        @page :right {
-            @top-left-corner { content: ""; }
-            @top-left { content: ""; }
-            @top-center { content: ""; }
-            @top-right { content: ""; }
-            @top-right-corner { content: ""; }
-            @bottom-left-corner { content: ""; }
-            @bottom-left { content: ""; }
-            @bottom-center { content: ""; }
+            @bottom-center { content: counter(page) " / " counter(pages); font-family: "SimSun", "宋体", serif; font-size: 10pt; }
             @bottom-right { content: ""; }
             @bottom-right-corner { content: ""; }
         }
@@ -533,6 +519,39 @@ async function exportPdfReport() {
             color: #000;
             font-size: 11pt;
             margin: 0;
+            padding: 15px;
+        }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .toolbar button {
+            font-size: 16px;
+            padding: 12px 24px;
+            border: 1px solid #2563eb;
+            background: #2563eb;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .toolbar .btn-back {
+            background: #fff;
+            color: #2563eb;
+        }
+        .tip {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin: 0 0 15px 0;
+        }
+        @media print {
+            .toolbar, .tip { display: none !important; }
+            body { padding: 0; }
         }
         .report-title {
             text-align: center;
@@ -607,6 +626,11 @@ async function exportPdfReport() {
     </style>
 </head>
 <body>
+    <div class="toolbar">
+        <button id="btn-back" class="btn-back">← 返回</button>
+        <button id="btn-print">🖨️ 打印 / 导出PDF</button>
+    </div>
+    <div class="tip">提示：在打印对话框中，请取消勾选"页眉和页脚"以隐藏多余信息</div>
     <div class="report-title">胶粘剂性能评估报告</div>
 
     <!-- ========== 1. 项目信息 ========== -->
@@ -664,15 +688,14 @@ async function exportPdfReport() {
         html += '<tr><td>批准</td><td></td><td></td></tr>\n';
         html += '</table>\n';
 
-        html += '\n    <div class="footer">报告生成日期: ' + dateStr + '</div>\n';
-
-        html += '\n    <script>\n        window.onload = function() { setTimeout(function() { window.print(); }, 500); };\n    </script>\n';
+        html += '\n    <script>\n    document.getElementById("btn-back").addEventListener("click", function() {\n        window.location.href = "index.html";\n    });\n    document.getElementById("btn-print").addEventListener("click", function() {\n        window.print();\n    });\n    </script>\n';
         html += '</body>\n</html>';
 
-        const win = window.open('', '_blank');
-        win.document.open();
-        win.document.write(html);
-        win.document.close();
+        // 替换当前页面内容（避免手机端开新标签页后找不到返回的问题）
+        document.open();
+        document.write(html);
+        document.close();
+        document.title = "胶粘剂性能评估报告";
 
     } catch (e) {
         console.error('导出PDF失败:', e);
