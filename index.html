@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png" type="image/png">
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="docx.umd.js"></script>
+    <script src="FileSaver.min.js"></script>
 </head>
 <body>
     <header class="app-header">
@@ -127,6 +126,28 @@
                 <h2 class="card-title">材料性能参数</h2>
                 <div class="grid-3">
                     <div class="field">
+                        <label>基材A</label>
+                        <select id="substrate_a">
+                            <option value="玻璃">玻璃</option>
+                            <option value="玻璃钢">玻璃钢</option>
+                            <option value="铝框">铝框</option>
+                            <option value="铁框">铁框</option>
+                            <option value="PC板">PC板</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>基材B</label>
+                        <select id="substrate_b">
+                            <option value="玻璃">玻璃</option>
+                            <option value="玻璃钢">玻璃钢</option>
+                            <option value="铝框" selected>铝框</option>
+                            <option value="铁框">铁框</option>
+                            <option value="PC板">PC板</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="field">
                         <label>玻璃热膨胀系数 <span class="unit">/℃</span></label>
                         <input type="text" id="glass_expansion" value="9.28e-6">
                     </div>
@@ -139,11 +160,11 @@
                         <input type="text" id="frp_expansion" value="15e-6">
                     </div>
                     <div class="field">
-                        <label>初始抗拉强度 <span class="unit">MPa</span></label>
+                        <label>老化后拉伸强度 <span class="unit">MPa</span></label>
                         <input type="number" id="tensile_strength" value="7.8" step="0.1" min="0" inputmode="decimal">
                     </div>
                     <div class="field">
-                        <label>初始剪切强度 <span class="unit">MPa</span></label>
+                        <label>老化后剪切强度 <span class="unit">MPa</span></label>
                         <input type="number" id="shear_strength" value="5.3" step="0.1" min="0" inputmode="decimal">
                     </div>
                     <div class="field">
@@ -151,6 +172,7 @@
                         <input type="number" id="allow_shear_angle" value="0.5" step="0.01" min="0" inputmode="decimal">
                     </div>
                 </div>
+                <p class="hint">常用材料热膨胀系数: 玻璃 9.28e-6/℃, 铝框 23e-6/℃, 玻璃钢 10-20e-6/℃, 钢 12e-6/℃, 铜 17e-6/℃, PC板 6e-6/℃</p>
             </div>
 
             <div class="card">

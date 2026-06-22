@@ -6,6 +6,15 @@ const CONDITION_NAMES = {
     'overtaking': '会车叠加'
 };
 
+// 基材热膨胀系数数据库 (/℃)
+const SUBSTRATE_DATA = {
+    '玻璃': 9.28e-6,
+    '玻璃钢': 15e-6,
+    '铝框': 23e-6,
+    '铁框': 12e-6,
+    'PC板': 6e-6
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
@@ -22,6 +31,24 @@ function setupEventListeners() {
     document.getElementById('back-to-input-btn').addEventListener('click', backToInput);
     document.getElementById('export-word-btn').addEventListener('click', exportWordReport);
     document.getElementById('export-pdf-btn').addEventListener('click', exportPdfReport);
+    
+    // 基材选择事件
+    document.getElementById('substrate_a').addEventListener('change', onSubstrateAChanged);
+    document.getElementById('substrate_b').addEventListener('change', onSubstrateBChanged);
+}
+
+function onSubstrateAChanged() {
+    const substrate = document.getElementById('substrate_a').value;
+    if (SUBSTRATE_DATA.hasOwnProperty(substrate)) {
+        document.getElementById('glass_expansion').value = SUBSTRATE_DATA[substrate].toExponential(2);
+    }
+}
+
+function onSubstrateBChanged() {
+    const substrate = document.getElementById('substrate_b').value;
+    if (SUBSTRATE_DATA.hasOwnProperty(substrate)) {
+        document.getElementById('frame_expansion').value = SUBSTRATE_DATA[substrate].toExponential(2);
+    }
 }
 
 function switchTab(event) {
@@ -325,13 +352,13 @@ function performCalculation(params) {
 
     results.aged_tensile_strength = params.tensile_strength * results.total_aging_factor;
     step7.calculations.push({
-        formula: '老化后抗拉强度 = 初始抗拉强度 × 总老化折减系数',
+        formula: '老化后抗拉强度 = 老化后拉伸强度 × 总老化折减系数',
         value: 'σ_D拉伸 = ' + params.tensile_strength + ' MPa × ' + results.total_aging_factor.toFixed(6) + ' = ' + results.aged_tensile_strength.toFixed(6) + ' MPa'
     });
 
     results.aged_shear_strength = params.shear_strength * results.total_aging_factor;
     step7.calculations.push({
-        formula: '老化后剪切强度 = 初始剪切强度 × 总老化折减系数',
+        formula: '老化后剪切强度 = 老化后剪切强度 × 总老化折减系数',
         value: 'σ_D剪切 = ' + params.shear_strength + ' MPa × ' + results.total_aging_factor.toFixed(6) + ' = ' + results.aged_shear_strength.toFixed(6) + ' MPa'
     });
     steps.push(step7);
